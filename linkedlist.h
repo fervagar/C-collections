@@ -15,35 +15,36 @@
  *  with this program; if not, write to the Free Software Foundation, Inc.,
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- *	Fernando Vanyo Garcia <fernando@fervagar.com>
+ *      Fernando Vanyo Garcia <fernando@fervagar.com>
  */
 
-#include <stddef.h> // For 'offsetof' macro
+#include <stddef.h>                     // For 'offsetof' macro
 
-#define PAYLOAD(node)               (node->payload)
-#define SETPAYLOAD(node, ptr)       (PAYLOAD(node) = ((void*) ptr))
-#define GETPADDR(node, type)        ((type*)(&(node->payload)))
-#define GETPAYLOAD(node, type)      ((type*)(node->payload))
-#define GETBASEADDR(ptr, member)    (flnode *) ((char *)ptr - offsetof(flnode, member))
+#define PAYLOAD(node)                   (node->payload)
+#define SETPAYLOAD(node, ptr)           (PAYLOAD(node) = ((void*) ptr))
+#define GETPADDR(node, type)            ((type*)(&(node->payload)))
+#define GETPAYLOAD(node, type)          ((type*)(node->payload))
+#define GETBASEADDR(ptr, member)        (flnode *) ((char *)ptr - offsetof(flnode, member))
 
-#define ITERATE(__list, __fn0, __code)                              \
-    do {                                                            \
-        if(__list != NULL) {                                        \
-            for(__fn0 = __list->head;                               \
-            __fn0 != NULL; __fn0 = __fn0->next) __code              \
-        }                                                           \
+#define ITERATE(__list, __fn0, __code)                  \
+    do {                                                \
+        if(__list != NULL) {                            \
+            for(__fn0 = __list->head;                   \
+            __fn0 != NULL; __fn0 = __fn0->next) __code  \
+        }                                               \
     } while(0)
 
-#define ITERATE_AND_FREE(__list, __fn0, __code)                     \
-    do {                                                            \
-        flnode *__fnextn;                                           \
-        if(__list != NULL) {                                        \
-            for(__fn0 = __list->head;                               \
-            __fn0 != NULL; __fn0 = __fnextn) {                      \
-                __fnextn = __fn0->next;                             \
-                __code                                              \
-            }                                                       \
-        }                                                           \
+#define ITERATE_AND_FREE(__list, __fn0, __code) \
+    do {                                        \
+        flnode *__fnextn;                       \
+        if(__list != NULL) {                    \
+            for(__fn0 = __list->head;           \
+            __fn0 != NULL; __fn0 = __fnextn) {  \
+                __fnextn = __fn0->next;         \
+                __code                          \
+                free(__fn0);                    \
+            }                                   \
+        }                                       \
     } while(0)
 
 
@@ -89,24 +90,25 @@ typedef struct flnode_ flnode;
 typedef struct flist_ flist;
 
 struct flnode_ {
-    flnode *prev;
-    flnode *next;
-    flist *list;
-    void *payload;
+        flnode *prev;
+        flnode *next;
+        flist *list;
+        void *payload;
 };
 
 struct flist_ {
-    flnode *head;
-    flnode *tail;
-    size_t nodes;
+        flnode *head;
+        flnode *tail;
+        size_t nodes;
 };
 
 flist *create_list();
 flnode *create_node(void *ptr);
-flnode *delete_node(flnode *node);
-flnode *add_before(flist *list, flnode *new_node, flnode *existing_node);
-flnode *add_head(flist *list, flnode *node);
-flnode *add_tail(flist *list, flnode *node);
-flnode *set_payload(flnode *node, void *ptr);
-flist *free_nodes(flist *list);
-void free_list(flist *list);
+flnode *delete_node(flnode * node);
+flnode *add_before(flist * list, flnode * new_node, flnode * existing_node);
+flnode *add_head(flist * list, flnode * node);
+flnode *add_tail(flist * list, flnode * node);
+flnode *set_payload(flnode * node, void *ptr);
+void free_list(flist * list);
+void free_list_and_all_payloads(flist * list);
+flist *free_nodes(flist * list);
