@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
     for(i = 0; string[i] != 0x00; i++) {
         add_tail(l, create_node((void *) &string[i]));
     }
-	
+
     print_list(l);
     free_list(l);
 

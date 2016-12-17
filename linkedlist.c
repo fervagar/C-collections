@@ -22,7 +22,7 @@
 #include "linkedlist.h"
 
 static void init_list(flist *list) {
-        if(list != NULL) {
+        if(list) {
                 list->head = list->tail = NULL;
                 list->nodes = 0;
         }
@@ -34,7 +34,7 @@ flist *create_list() {
         init_list(p);
 
         return p;
-};
+}
 
 flnode *create_node(void *ptr) {
         flnode *new_node;
@@ -46,25 +46,27 @@ flnode *create_node(void *ptr) {
         return new_node;
 }
 
-flnode *delete_node(flnode *node) {
+flnode *remove_node(flnode *node) {
         flnode *aux;
         flist *list;
 
-        if((node != NULL) && (node->list != NULL)) {
+        if((node) && (node->list)) {
                 list = node->list;
-                if(node->prev == NULL) {        // HEAD node //
+                if(!(node->prev)) {        // HEAD node //
                         aux = node;
                         node = node->next;
-                        if(node != NULL) {
+                        if(node) {
                                 node->prev = NULL;
                         }
                         list->head = node;
-                } else {
+                }
+                else {
                         aux = node->prev;
                         aux->next = node->next;
-                        if(aux->next != NULL) {
+                        if(aux->next) {
                                 (aux->next)->prev = aux;
-                        } else {
+                        }
+                        else {
                                 list->tail = aux;
                         }
                         aux = node;
@@ -77,23 +79,27 @@ flnode *delete_node(flnode *node) {
         return node;
 }
 
+/**
+ *  Wrapper of 'remove_node()': Extract a single node; the head or the tail of the given list.
+ *  The node to pop() is indicated by the 2nd argument: 
+ *      If Zero     -> remove head node
+ *      If Non-Zero -> remove tail node
+ */
+flnode *flist_pop(flist *list, int head) {
+        if(!(list)) return NULL;
+        return remove_node((head)? list->head : list->tail);
+}
+
 flnode *add_before(flist *list, flnode *new_node, flnode *existing_node) {
         flnode *aux;
 
-        if(new_node != NULL && existing_node != NULL) {
+        if((new_node) && (existing_node)) {
                 new_node->list = list;
-                if(existing_node->prev == NULL) {       // HEAD node //
-                        existing_node->prev = new_node;
-                        new_node->prev = NULL;
-                        new_node->next = existing_node;
-                        list->head = new_node;
-                } else {
-                        aux = existing_node->prev;
-                        existing_node->prev = new_node;
-                        new_node->prev = aux;
-                        new_node->next = existing_node;
-                        aux->next = new_node;
-                }
+                aux = existing_node->prev;
+                existing_node->prev = new_node;
+                new_node->prev = aux;
+                new_node->next = existing_node;
+                aux->next = new_node;
                 list->nodes++;
         }
 
@@ -106,9 +112,10 @@ flnode *add_head(flist *list, flnode *node) {
         node->list = list;
         list->head = node;
 
-        if(list->tail == NULL) {
+        if(!(list->tail)) {
                 list->tail = node;
-        } else {
+        }
+        else {
                 (node->next)->prev = node;
         }
 
@@ -123,9 +130,10 @@ flnode *add_tail(flist *list, flnode *node) {
         node->list = list;
         list->tail = node;
 
-        if(list->head == NULL) {
+        if(!(list->head)) {
                 list->head = node;
-        } else {
+        }
+        else {
                 (node->prev)->next = node;
         }
 
@@ -134,19 +142,23 @@ flnode *add_tail(flist *list, flnode *node) {
         return node;
 }
 
+int is_tail_node(flnode *node) {
+        return ((node) && !(node->next));
+}
+
 flnode *set_payload(flnode *node, void *ptr) {
-        if(node == NULL) {
-                return NULL;
-        } else {
+        if(node) {
                 SETPAYLOAD(node, ptr);
                 return node;
         }
+
+        return NULL;
 }
 
 void free_list(flist *list) {
         flnode *p;
 
-        if(list != NULL) {
+        if(list) {
                 ITERATE_AND_FREE(list, p, ;);
                 free(list);
         }
@@ -161,7 +173,7 @@ void free_list(flist *list) {
 void free_list_and_all_payloads(flist *list) {
         flnode *p;
 
-        if(list != NULL) {
+        if(list) {
                 ITERATE_AND_FREE(list, p, {
                         free(PAYLOAD(p));      /* /!\ */
                 });
@@ -177,7 +189,7 @@ void free_list_and_all_payloads(flist *list) {
 flist *free_nodes(flist * list) {
         flnode *p;
 
-        if(list != NULL) {
+        if(list) {
                 ITERATE_AND_FREE(list, p, ;);
                 init_list(list);
         }

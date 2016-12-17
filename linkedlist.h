@@ -104,11 +104,14 @@ struct flist_ {
 
 flist *create_list();
 flnode *create_node(void *ptr);
-flnode *delete_node(flnode * node);
-flnode *add_before(flist * list, flnode * new_node, flnode * existing_node);
-flnode *add_head(flist * list, flnode * node);
-flnode *add_tail(flist * list, flnode * node);
+flnode *remove_node(flnode *node);
+flnode *flist_pop(flist *list, int head);
+flnode *add_before(flist *list, flnode *new_node, flnode *existing_node);
+flnode *add_head(flist *list, flnode *node);
+flnode *add_tail(flist *list, flnode *node);
+int is_tail_node(flnode *node);
 flnode *set_payload(flnode * node, void *ptr);
-void free_list(flist * list);
-void free_list_and_all_payloads(flist * list);
-flist *free_nodes(flist * list);
+void free_list(flist *list);
+void free_list_and_all_payloads(flist *list);
+flist *free_nodes(flist *list);
+
