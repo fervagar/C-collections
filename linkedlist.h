@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Fernando Vañó García
+ * Copyright (C) 2017 Fernando Vañó García
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
 #define GETPADDR(node, type)            ((type*)(&(node->payload)))
 #define GETPAYLOAD(node, type)          ((type*)(node->payload))
 #define GETBASEADDR(ptr, member)        (flnode *) ((char *)ptr - offsetof(flnode, member))
+
+#define ISEMPTY(__list)                 (!(__list->head))
 
 #define ITERATE(__list, __fn0, __code)                  \
     do {                                                \
@@ -110,6 +112,7 @@ flnode *add_before(flist *list, flnode *new_node, flnode *existing_node);
 flnode *add_head(flist *list, flnode *node);
 flnode *add_tail(flist *list, flnode *node);
 int is_tail_node(flnode *node);
+size_t get_nodes_count(flist *list);
 flnode *set_payload(flnode * node, void *ptr);
 void free_list(flist *list);
 void free_list_and_all_payloads(flist *list);

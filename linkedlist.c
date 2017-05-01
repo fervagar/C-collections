@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Fernando Vañó García
+ * Copyright (C) 2017 Fernando Vañó García
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -144,6 +144,16 @@ flnode *add_tail(flist *list, flnode *node) {
 
 int is_tail_node(flnode *node) {
         return ((node) && !(node->next));
+}
+
+size_t get_nodes_count(flist *list) {
+        size_t count = 0;
+
+        if(list) {
+                count = list->nodes;
+        }
+
+        return count;
 }
 
 flnode *set_payload(flnode *node, void *ptr) {
